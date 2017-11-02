@@ -6,6 +6,9 @@
 // http://www.enuma.io/
 // ----------------------------------------------------------------------------
 
+const TestLib = require('../tools/testlib.js')
+const Utils = require('./lib/StdTestUtils.js')
+
 
 // ----------------------------------------------------------------------------
 // Tests Summary

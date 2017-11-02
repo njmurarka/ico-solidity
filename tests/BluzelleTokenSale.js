@@ -7,6 +7,9 @@
 // The MIT Licence.
 // ----------------------------------------------------------------------------
 
+const TestLib = require('../tools/testlib.js')
+const StdUtils = require('./lib/StdTestUtils.js')
+
 
 // ----------------------------------------------------------------------------
 // Tests Summary
@@ -100,6 +103,20 @@ describe('BluzelleTokenSale Contract', () => {
    var account3 = null
    var account4 = null
    var account5 = null
+
+
+   const buyTokens = async (from, to, amount) => {
+      return StdUtils.buyTokens(
+         token,
+         sale,
+         owner,
+         wallet,
+         DECIMALS_FACTOR,
+         from,
+         to,
+         amount
+      )
+   }
 
 
    before(async () => {
@@ -406,55 +423,55 @@ describe('BluzelleTokenSale Contract', () => {
       it('buyTokens without being whitelisted', async () => {
          assert.equal(await sale.methods.whitelist(account1).call(), 0)
 
-         await TestLib.assertThrows(Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN))
+         await TestLib.assertThrows(buyTokens(account1, account1, CONTRIBUTION_MIN))
       })
 
       it('buyTokens stage 1, whitelisted stage 1', async () => {
          assert.equal(await sale.methods.currentStage().call(), 1)
          await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner })
 
-         await Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN)
+         await buyTokens(account1, account1, CONTRIBUTION_MIN)
       })
 
       it('buyTokens stage 1, whitelisted stage 2', async () => {
          assert.equal(await sale.methods.currentStage().call(), 1)
          await sale.methods.setWhitelistedStatus(account1, 2).send({ from: owner })
 
-         await TestLib.assertThrows(Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN))
+         await TestLib.assertThrows(buyTokens(account1, account1, CONTRIBUTION_MIN))
       })
 
       it('buyTokens stage 2, whitelisted stage 2', async () => {
          await sale.methods.setCurrentStage(2).send({ from: owner })
          await sale.methods.setWhitelistedStatus(account1, 2).send({ from: owner })
 
-         await Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN)
+         await buyTokens(account1, account1, CONTRIBUTION_MIN)
 
       })
 
       it('buyTokens stage 2, whitelisted stage 3', async () => {
          await sale.methods.setWhitelistedStatus(account1, 3).send({ from: owner })
 
-         await TestLib.assertThrows(Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN))
+         await TestLib.assertThrows(buyTokens(account1, account1, CONTRIBUTION_MIN))
       })
 
       it('buyTokens stage 3, whitelisted stage 1', async () => {
          await sale.methods.setCurrentStage(3).send({ from: owner })
          await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner })
 
-         await Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN)
+         await buyTokens(account1, account1, CONTRIBUTION_MIN)
       })
 
       it('buyTokens stage 2, removed from whitelist', async () => {
          await sale.methods.setWhitelistedStatus(account1, 0).send({ from: owner })
 
-         await TestLib.assertThrows(Utils.buyTokens(token, sale, account1, account1, CONTRIBUTION_MIN))
+         await TestLib.assertThrows(buyTokens(account1, account1, CONTRIBUTION_MIN))
       })
    })
 
 
    function checkSetCurrentStage(receipt, newStage) {
 
-      Utils.checkStatus(receipt)
+      TestLib.checkStatus(receipt)
 
       assert.equal(Object.keys(receipt.events).length, 1)
       assert.equal(typeof receipt.events.CurrentStageUpdated, 'object')
@@ -466,7 +483,7 @@ describe('BluzelleTokenSale Contract', () => {
 
    function checkSetWhitelistedStatus(receipt, address, stage) {
 
-      Utils.checkStatus(receipt)
+      TestLib.checkStatus(receipt)
 
       assert.equal(Object.keys(receipt.events).length, 1)
       assert.equal(typeof receipt.events.WhitelistedStatusUpdated, 'object')
@@ -479,7 +496,7 @@ describe('BluzelleTokenSale Contract', () => {
 
    function checkSetWhitelistedBatch(receipt, addresses, stages) {
 
-      Utils.checkStatus(receipt)
+      TestLib.checkStatus(receipt)
 
       assert.equal(Object.keys(receipt.events).length, 1)
       assert.equal(typeof receipt.events.WhitelistedStatusUpdated, 'object')

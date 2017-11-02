@@ -6,6 +6,9 @@
 // http://www.enuma.io/
 // ----------------------------------------------------------------------------
 
+const TestLib = require('../tools/testlib.js')
+const Utils = require('./lib/StdTestUtils.js')
+
 
 // ----------------------------------------------------------------------------
 // Tests Summary
@@ -31,15 +34,12 @@
 //    - buyTokens with bonus = 100
 //    - buyTokens with bonus = 200
 //    - buyTokens with more ETH than left for sale
-//    - buyTokens after sold out
-//    x buyTokens with less tokens left than maxTokensPerAccount
-//    x buyTokens with enough ETH to buy all tokens in a single transaction, and more...
-//    x buyTokens with an additional minimum contribution
-//    x buyTokens with exact amount
-//    x buyTokens with mininum contribution more
-//    x buyTokens before start date
-//    x buyTokens after end date
-//    x buyTokens when finalized
+//    - buyTokens with less tokens left than maxTokensPerAccount
+//    - buyTokens with enough ETH to buy all tokens in a single transaction, and more...
+//    - buyTokens with an additional minimum contribution
+//    - buyTokens before start date
+//    - buyTokens after end date
+//    - buyTokens when sale finalized
 //
 describe('FlexibleTokenSale Contract - buyTokens tests', () => {
 
@@ -66,19 +66,23 @@ describe('FlexibleTokenSale Contract - buyTokens tests', () => {
    var account2 = null
 
 
-   before(async () => {
-      await TestLib.initialize()
+   const buyTokens = async (from, to, amount) => {
+      return Utils.buyTokens(
+         token,
+         sale,
+         owner,
+         wallet,
+         DECIMALS_FACTOR,
+         from,
+         to,
+         amount
+      )
+   }
 
-      accounts = await web3.eth.getAccounts()
 
-      owner    = accounts[1]
-      ops      = accounts[2]
-      wallet   = accounts[3]
-      account1 = accounts[4]
-      account2 = accounts[5]
+   var deploymentResult = null
 
-      var deploymentResult = null
-
+   const redeploy = async () => {
       deploymentResult = await TestLib.deploy('FinalizableToken', [ TOKEN_NAME, TOKEN_SYMBOL, TOKEN_DECIMALS, TOKEN_TOTALSUPPLY ], { from: owner })
       token = deploymentResult.instance
 
@@ -94,6 +98,21 @@ describe('FlexibleTokenSale Contract - buyTokens tests', () => {
       await sale.methods.changeTime(START_TIME + 1).send({ from: owner })
 
       await token.methods.transfer(sale._address, new BigNumber(5000000).mul(DECIMALS_FACTOR)).send({ from: owner })
+   }
+
+
+   before(async () => {
+      await TestLib.initialize()
+
+      accounts = await web3.eth.getAccounts()
+
+      owner    = accounts[1]
+      ops      = accounts[2]
+      wallet   = accounts[3]
+      account1 = accounts[4]
+      account2 = accounts[5]
+
+      await redeploy()
    })
 
 
@@ -176,6 +195,53 @@ describe('FlexibleTokenSale Contract - buyTokens tests', () => {
       it('buyTokens with more ETH than left for sale', async () => {
          assert.equal(await sale.methods.maxTokensPerAccount().call(), 0)
          await buyTokens(account1, account1, -1)
+      })
+
+      it('buyTokens with less tokens left than maxTokensPerAccount', async () => {
+         await redeploy()
+
+         const balance = new BigNumber(await token.methods.balanceOf(sale._address).call())
+
+         await sale.methods.setMaxTokensPerAccount(balance.add(1000000)).send({ from: owner })
+
+         await buyTokens(account1, account1, -1)
+      })
+
+      it('buyTokens with enough ETH to buy all tokens in a single transaction, and more...', async () => {
+         await redeploy()
+
+         await buyTokens(account1, account1, -1)
+      })
+
+      it('buyTokens with an additional minimum contribution', async () => {
+         await TestLib.assertThrows(buyTokens(account1, account1, contributionMin))
+      })
+
+      it('buyTokens before start time', async () => {
+         await redeploy()
+
+         await sale.methods.changeTime(START_TIME - 1000).send({ from: owner })
+
+         await TestLib.assertThrows(buyTokens(account1, account1, contributionMin))
+      })
+
+      it('buyTokens during sale time', async () => {
+         await sale.methods.changeTime(START_TIME + 1).send({ from: owner })
+
+         await buyTokens(account1, account1, contributionMin)
+      })
+
+      it('buyTokens after end time', async () => {
+         await sale.methods.changeTime(END_TIME + 1).send({ from: owner })
+
+         await TestLib.assertThrows(buyTokens(account1, account1, contributionMin))
+      })
+
+      it('buyTokens after finalized', async () => {
+         await sale.methods.changeTime(START_TIME + 1).send({ from: owner })
+         await sale.methods.finalize().send({ from: owner })
+
+         await TestLib.assertThrows(buyTokens(account1, account1, contributionMin))
       })
    })
 })

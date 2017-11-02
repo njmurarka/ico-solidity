@@ -6,10 +6,12 @@
 // http://www.enuma.io/
 // ----------------------------------------------------------------------------
 
+const TestLib = require('../tools/testlib.js')
+const Utils = require('./lib/StdTestUtils.js')
+
 
 // ** Note **
-// In order to test the Math library, need to temporairly set the
-// access modifiers to public or wrap in another contract.
+// In order to test the Math library, we use a wrapper contract.
 
 // ----------------------------------------------------------------------------
 // Tests Summary
@@ -71,7 +73,7 @@ describe('Math Library', () => {
 
    before(async () => {
 
-      deploymentResult = await TestLib.deploy('Math', [ ])
+      deploymentResult = await TestLib.deploy('MathTest', [ ])
 
       math = deploymentResult.instance
 
