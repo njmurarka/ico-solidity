@@ -47,6 +47,6 @@ contract BluzelleTokenSaleConfig is BluzelleTokenConfig {
     uint256 public constant BONUS                 = 120;
 
     // Maximum amount of tokens that can be purchased for each account.
-    uint256 public constant TOKENS_ACCOUNT_MAX    = 17000;
+    uint256 public constant TOKENS_ACCOUNT_MAX    = 17000 * DECIMALSFACTOR;
 }
 

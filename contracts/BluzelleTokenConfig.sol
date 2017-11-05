@@ -17,6 +17,6 @@ contract BluzelleTokenConfig {
     uint8   public constant TOKEN_DECIMALS    = 18;
 
     uint256 public constant DECIMALSFACTOR    = 10**uint256(TOKEN_DECIMALS);
-    uint256 public constant TOKEN_TOTALSUPPLY = 800000000 * DECIMALSFACTOR;
+    uint256 public constant TOKEN_TOTALSUPPLY = 500000000 * DECIMALSFACTOR;
 }
 

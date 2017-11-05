@@ -23,7 +23,7 @@ var fn = assert.equal
 
 assert.equal = (a, b, c) => {
 
-   if (a.constructor.name == 'BigNumber' && b.constructor.name == 'BigNumber') {
+   if (a !== null && b !== null && typeof a !== 'undefined' && typeof b !== 'undefined' && a.constructor.name == 'BigNumber' && b.constructor.name == 'BigNumber') {
       assert.isTrue(a.eq(b), "BigNumber " + a.toString() + " is not equal to " + b.toString())
    } else {
       fn(a, b, c)
@@ -32,7 +32,7 @@ assert.equal = (a, b, c) => {
 
 
 module.exports.initialize = async () => {
-    web3 = await Utils.buildWeb3()
+   web3 = await Utils.buildWeb3('http://localhost:8545')
 }
 
 
@@ -94,8 +94,9 @@ module.exports.assertThrows = async (promise) => {
    } catch (error) {
       const isInvalidOpcode = error.message.indexOf('invalid opcode') > -1
       const isOutOfGas      = error.message.indexOf('out of gas') > -1
+      const isDecode        = error.message.indexOf("Couldn't decode") > -1 && error.message.indexOf("from ABI: 0x") > -1
 
-      assert(isInvalidOpcode || isOutOfGas, "Expected transaction to fail, but got an error instead: " + error)
+      assert(isInvalidOpcode || isOutOfGas || isDecode, "Expected transaction to fail, but got an error instead: " + error)
 
       return
    }

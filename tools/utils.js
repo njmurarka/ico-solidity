@@ -12,16 +12,15 @@ const Path = require('path')
 
 
 const projectRoot = '../'
-const web3Url     = 'http://localhost:8545'
 
 
-module.exports.buildWeb3 = async () => {
-   return buildWeb3()
+module.exports.buildWeb3 = async (url) => {
+   return buildWeb3(url)
 }
 
 
-async function buildWeb3() {
-   return new Web3(new Web3.providers.HttpProvider(web3Url))
+async function buildWeb3(url) {
+   return new Web3(new Web3.providers.HttpProvider(url))
 }
 
 
@@ -70,7 +69,7 @@ async function deployContract(web3, name, abi, bytecode, args, options) {
    }
    if (!options.gas) {
       options.gas = 4700000
-      //gasPrice: '30000000000000'
+      gasPrice: '20000000000'
    }
 
    options.data = "0x" + bytecode

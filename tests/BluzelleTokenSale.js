@@ -7,8 +7,9 @@
 // The MIT Licence.
 // ----------------------------------------------------------------------------
 
-const TestLib = require('../tools/testlib.js')
+const TestLib  = require('../tools/testlib.js')
 const StdUtils = require('./lib/StdTestUtils.js')
+const Utils    = require('./lib/BluzelleTestUtils.js')
 
 
 // ----------------------------------------------------------------------------
@@ -62,7 +63,9 @@ const StdUtils = require('./lib/StdTestUtils.js')
 //    - setWhitelistedBatch - rerun the same batch again
 //    - setWhitelistedBatch - remove everybody from whitelist
 // buyTokens
-//    - buyTokens without being whitelisted
+//    - buyTokens where sender nor receiver whitelisted
+//    x buyTokens where sender not whitelisted
+//    x buyTokens where sender beneficiary not whitelisted
 //    - buyTokens stage 1, whitelisted stage 1
 //    - buyTokens stage 1, whitelisted stage 2
 //    - buyTokens stage 2, whitelisted stage 2
@@ -84,7 +87,7 @@ describe('BluzelleTokenSale Contract', () => {
 
    const TOKENSPERKETHER     = 1700000
    const BONUS               = 120
-   const MAXTOKENSPERACCOUNT = 17000
+   const MAXTOKENSPERACCOUNT = new BigNumber("17000").mul(DECIMALS_FACTOR)
    const CONTRIBUTION_MIN    = new BigNumber(0.1).mul(DECIMALS_FACTOR)
    const START_TIME          = 1511870400
    const END_TIME            = 1512043200
@@ -172,7 +175,7 @@ describe('BluzelleTokenSale Contract', () => {
       })
 
       it('maxTokensPerAccount', async () => {
-         assert.equal(await sale.methods.maxTokensPerAccount().call(), MAXTOKENSPERACCOUNT)
+         assert.equal(new BigNumber(await sale.methods.maxTokensPerAccount().call()), MAXTOKENSPERACCOUNT)
       })
 
       it('contributionMin', async () => {
@@ -235,7 +238,7 @@ describe('BluzelleTokenSale Contract', () => {
       it('setCurrentStage(2)', async () => {
          assert.equal(await sale.methods.currentStage().call(), 1)
          assert.equal(await sale.methods.setCurrentStage(2).call({ from: owner }), true)
-         checkSetCurrentStage(await sale.methods.setCurrentStage(2).send({ from: owner }), 2)
+         Utils.checkSetCurrentStage(await sale.methods.setCurrentStage(2).send({ from: owner }), 2)
          assert.equal(await sale.methods.currentStage().call(), 2)
       })
 
@@ -250,7 +253,7 @@ describe('BluzelleTokenSale Contract', () => {
       it('setCurrentStage(100)', async () => {
          assert.equal(await sale.methods.currentStage().call(), 2)
          assert.equal(await sale.methods.setCurrentStage(100).call({ from: owner }), true)
-         checkSetCurrentStage(await sale.methods.setCurrentStage(100).send({ from: owner }), 100)
+         Utils.checkSetCurrentStage(await sale.methods.setCurrentStage(100).send({ from: owner }), 100)
          assert.equal(await sale.methods.currentStage().call(), 100)
       })
    })
@@ -272,49 +275,49 @@ describe('BluzelleTokenSale Contract', () => {
 
       it('setWhitelistedStatus(owner, 1)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(owner, 1).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(owner, 1).send({ from: owner }), owner, 1)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(owner, 1).send({ from: owner }), owner, 1)
          assert.equal(await sale.methods.whitelist(owner).call(), 1)
       })
 
       it('setWhitelistedStatus(ops, 1)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(ops, 1).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(ops, 1).send({ from: owner }), ops, 1)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(ops, 1).send({ from: owner }), ops, 1)
          assert.equal(await sale.methods.whitelist(ops).call(), 1)
       })
 
       it('setWhitelistedStatus(normal, 0)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 0).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 0).send({ from: owner }), account1, 0)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 0).send({ from: owner }), account1, 0)
          assert.equal(await sale.methods.whitelist(account1).call(), 0)
       })
 
       it('setWhitelistedStatus(normal, 1)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 1).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner }), account1, 1)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner }), account1, 1)
          assert.equal(await sale.methods.whitelist(account1).call(), 1)
       })
 
       it('setWhitelistedStatus(normal, 2)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 2).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 2).send({ from: owner }), account1, 2)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 2).send({ from: owner }), account1, 2)
          assert.equal(await sale.methods.whitelist(account1).call(), 2)
       })
 
       it('setWhitelistedStatus(normal, 1)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 1).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner }), account1, 1)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: owner }), account1, 1)
          assert.equal(await sale.methods.whitelist(account1).call(), 1)
       })
 
       it('setWhitelistedStatus(normal, 0)', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 0).call({ from: owner }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 0).send({ from: owner }), account1, 0)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 0).send({ from: owner }), account1, 0)
          assert.equal(await sale.methods.whitelist(account1).call(), 0)
       })
 
       it('setWhitelistedStatus as ops', async () => {
          assert.equal(await sale.methods.setWhitelistedStatus(account1, 1).call({ from: ops }), true)
-         checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: ops }), account1, 1)
+         Utils.checkSetWhitelistedStatus(await sale.methods.setWhitelistedStatus(account1, 1).send({ from: ops }), account1, 1)
          assert.equal(await sale.methods.whitelist(account1).call(), 1)
       })
 
@@ -353,7 +356,7 @@ describe('BluzelleTokenSale Contract', () => {
 
          assert.equal(await sale.methods.setWhitelistedBatch(addresses, stages).call({ from: ops }), true)
          receipt = await sale.methods.setWhitelistedBatch(addresses, stages).send({ from: ops })
-         checkSetWhitelistedBatch(receipt, addresses, stages)
+         Utils.checkSetWhitelistedBatch(receipt, addresses, stages)
 
          for (i = 0; i < addresses.length; i++) {
             assert.equal(await sale.methods.whitelist(addresses[i]).call(), stages[i])
@@ -366,7 +369,7 @@ describe('BluzelleTokenSale Contract', () => {
 
          assert.equal(await sale.methods.setWhitelistedBatch(addresses, stages).call({ from: ops }), true)
          receipt = await sale.methods.setWhitelistedBatch(addresses, stages).send({ from: ops })
-         checkSetWhitelistedBatch(receipt, addresses, stages)
+         Utils.checkSetWhitelistedBatch(receipt, addresses, stages)
 
          for (i = 0; i < addresses.length; i++) {
             assert.equal(await sale.methods.whitelist(addresses[i]).call(), stages[i])
@@ -379,7 +382,7 @@ describe('BluzelleTokenSale Contract', () => {
 
          assert.equal(await sale.methods.setWhitelistedBatch(addresses, stages).call({ from: ops }), true)
          receipt = await sale.methods.setWhitelistedBatch(addresses, stages).send({ from: ops })
-         checkSetWhitelistedBatch(receipt, addresses, stages)
+         Utils.checkSetWhitelistedBatch(receipt, addresses, stages)
 
          for (i = 0; i < addresses.length; i++) {
             assert.equal(await sale.methods.whitelist(addresses[i]).call(), stages[i])
@@ -392,7 +395,7 @@ describe('BluzelleTokenSale Contract', () => {
 
          assert.equal(await sale.methods.setWhitelistedBatch(addresses, stages).call({ from: ops }), true)
          receipt = await sale.methods.setWhitelistedBatch(addresses, stages).send({ from: ops })
-         checkSetWhitelistedBatch(receipt, addresses, stages)
+         Utils.checkSetWhitelistedBatch(receipt, addresses, stages)
 
          for (i = 0; i < addresses.length; i++) {
             assert.equal(await sale.methods.whitelist(addresses[i]).call(), stages[i])
@@ -467,49 +470,4 @@ describe('BluzelleTokenSale Contract', () => {
          await TestLib.assertThrows(buyTokens(account1, account1, CONTRIBUTION_MIN))
       })
    })
-
-
-   function checkSetCurrentStage(receipt, newStage) {
-
-      TestLib.checkStatus(receipt)
-
-      assert.equal(Object.keys(receipt.events).length, 1)
-      assert.equal(typeof receipt.events.CurrentStageUpdated, 'object')
-      const eventArgs = receipt.events.CurrentStageUpdated.returnValues
-      assert.equal(Object.keys(eventArgs).length, 2)
-      assert.equal(eventArgs._newStage, newStage)
-   }
-
-
-   function checkSetWhitelistedStatus(receipt, address, stage) {
-
-      TestLib.checkStatus(receipt)
-
-      assert.equal(Object.keys(receipt.events).length, 1)
-      assert.equal(typeof receipt.events.WhitelistedStatusUpdated, 'object')
-      const eventArgs = receipt.events.WhitelistedStatusUpdated.returnValues
-      assert.equal(Object.keys(eventArgs).length, 4)
-      assert.equal(eventArgs._address, address)
-      assert.equal(eventArgs._stage, stage)
-   }
-
-
-   function checkSetWhitelistedBatch(receipt, addresses, stages) {
-
-      TestLib.checkStatus(receipt)
-
-      assert.equal(Object.keys(receipt.events).length, 1)
-      assert.equal(typeof receipt.events.WhitelistedStatusUpdated, 'object')
-      const eventsArray = receipt.events.WhitelistedStatusUpdated
-      assert.equal(eventsArray.length, addresses.length)
-
-      for (i = 0; i < addresses.length; i++) {
-         const e = eventsArray[i]
-
-         assert.equal(e.event, 'WhitelistedStatusUpdated')
-         assert.equal(Object.keys(e.returnValues).length, 4)
-         assert.equal(e.returnValues._address, addresses[i])
-         assert.equal(e.returnValues._stage, stages[i])
-      }
-   }
 })
