@@ -9,7 +9,7 @@
 
 const Web3         = require('web3')
 const BigNumber    = require('bignumber.js')
-const Moment       = require('Moment')
+const Moment       = require('moment')
 const Chai         = require('chai')
 assert             = Chai.assert
 
