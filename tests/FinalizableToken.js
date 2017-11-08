@@ -248,8 +248,7 @@ describe('FinalizableToken Contract', () => {
 
             it('transfer all tokens back to token holder', async () => {
                const balance = new BigNumber(await token.methods.balanceOf(account1).call())
-
-               await TestLib.assertThrows(token.methods.transfer(owner, balance).call({ from: account1 }))
+               await token.methods.transfer(owner, balance).call({ from: account1 })
             })
          })
 

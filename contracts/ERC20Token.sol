@@ -19,10 +19,10 @@ contract ERC20Token is ERC20Interface {
    string  private tokenName;
    string  private tokenSymbol;
    uint8   private tokenDecimals;
-   uint256 private tokenTotalSupply;
+   uint256 internal tokenTotalSupply;
 
-   mapping(address => uint256) private balances;
-   mapping(address => mapping (address => uint256)) private allowed;
+   mapping(address => uint256) internal balances;
+   mapping(address => mapping (address => uint256)) allowed;
 
 
    function ERC20Token(string _name, string _symbol, uint8 _decimals, uint256 _totalSupply, address _initialTokenHolder) public {

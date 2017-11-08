@@ -86,7 +86,7 @@ describe('BluzelleTokenSale Contract', () => {
    const TOKEN_TOTALSUPPLY   = new BigNumber("500000000").mul(DECIMALS_FACTOR)
 
    const TOKENSPERKETHER     = 1700000
-   const BONUS               = 120
+   const BONUS               = 12000
    const MAXTOKENSPERACCOUNT = new BigNumber("17000").mul(DECIMALS_FACTOR)
    const CONTRIBUTION_MIN    = new BigNumber(0.1).mul(DECIMALS_FACTOR)
    const START_TIME          = 1511870400

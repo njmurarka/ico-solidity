@@ -32,7 +32,7 @@ assert.equal = (a, b, c) => {
 
 
 module.exports.initialize = async () => {
-   web3 = await Utils.buildWeb3('http://localhost:8545')
+    web3 = await Utils.buildWeb3('http://localhost:8545')
 }
 
 

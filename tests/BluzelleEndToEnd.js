@@ -36,7 +36,7 @@ const StdUtils = require('./lib/StdTestUtils.js')
 //    - Add another person to the whitelist
 //    - Contributor makes purchase on behalf of another whitelisted account
 //    - Suspend the presale
-//    - Change the bonus amount to 115 (15% bonus)
+//    - Change the bonus amount to 11500 (15% bonus)
 //    - Resume the presale
 //    - Contributor makes purchase
 //    - Change the window end time to end presale early
@@ -74,7 +74,7 @@ describe('Bluzelle End-To-End Scenario', () => {
    // Presale configuration
    const PRESALE_TOKENS                 = new BigNumber("15000000").mul(DECIMALS_FACTOR)
    const PRESALE_TOKENSPERKETHER        = 1700000
-   const PRESALE_BONUS                  = 120
+   const PRESALE_BONUS                  = 12000
    const PRESALE_MAXTOKENSPERACCOUNT    = new BigNumber(17000).mul(DECIMALS_FACTOR)
    const PRESALE_STARTTIME              = Moment().add(1, 'months')
    const PRESALE_ENDTIME                = Moment().add(2, 'months')
@@ -82,7 +82,7 @@ describe('Bluzelle End-To-End Scenario', () => {
    // Public sale configuration
    const PUBLICSALE_TOKENS              = new BigNumber("85000000").mul(DECIMALS_FACTOR)
    const PUBLICSALE_TOKENSPERKETHER     = 1700000
-   const PUBLICSALE_BONUS               = 100
+   const PUBLICSALE_BONUS               = 10000
    const PUBLICSALE_MAXTOKENSPERACCOUNT = new BigNumber(50000).mul(DECIMALS_FACTOR)
    const PUBLICSALE_STARTTIME           = Moment(PRESALE_STARTTIME).add(2, 'days')
    const PUBLICSALE_ENDTIME             = Moment(PUBLICSALE_STARTTIME).add(1, 'months')
@@ -159,7 +159,7 @@ describe('Bluzelle End-To-End Scenario', () => {
       it('Initialize the sale contract', async () => {
          await sale.methods.initialize(token._address).send({ from: owner })
          assert.equal(await sale.methods.token().call(), token._address)
-         assert.equal(await sale.methods.tokenConversionFactor().call(), new BigNumber(10).pow(18 - TOKEN_DECIMALS + 3 + 2))
+         assert.equal(new BigNumber(await sale.methods.tokenConversionFactor().call()), new BigNumber(10).pow(18 - TOKEN_DECIMALS + 3 + 4))
       })
 
       it('Set the ops key of the token to the sale contract', async () => {
@@ -251,9 +251,9 @@ describe('Bluzelle End-To-End Scenario', () => {
          assert.equal(await sale.methods.suspended().call(), true)
       })
 
-      it('Change the bonus amount to 115 (15% bonus)', async () => {
-         await sale.methods.setBonus(115).send({ from: owner })
-         assert.equal(await sale.methods.bonus().call(), 115)
+      it('Change the bonus amount to 11500 (15% bonus)', async () => {
+         await sale.methods.setBonus(11500).send({ from: owner })
+         assert.equal(await sale.methods.bonus().call(), 11500)
       })
 
       it('Resume the sale', async () => {

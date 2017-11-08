@@ -43,8 +43,8 @@ contract BluzelleTokenSaleConfig is BluzelleTokenConfig {
     // Price of tokens, based on the 1 ETH = 1700 BLZ conversion ratio.
     uint256 public constant TOKENS_PER_KETHER     = 1700000;
 
-    // Amount of bonus applied to the sale. 120 = 20% bonus, 100 = no bonus.
-    uint256 public constant BONUS                 = 120;
+    // Amount of bonus applied to the sale. 12000 = 20% bonus, 10750 = 7.5% bonus, 10000 = no bonus.
+    uint256 public constant BONUS                 = 12000;
 
     // Maximum amount of tokens that can be purchased for each account.
     uint256 public constant TOKENS_ACCOUNT_MAX    = 17000 * DECIMALSFACTOR;

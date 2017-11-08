@@ -90,7 +90,6 @@ contract BluzelleTokenSale is FlexibleTokenSale, BluzelleTokenSaleConfig {
    // unbounded loop so the call should take care to not exceed the tx gas limit or block gas limit.
    function setWhitelistedBatch(address[] _addresses, uint256[] _stages) public onlyOwnerOrOps returns (bool) {
       require(_addresses.length > 0);
-      require(_stages.length > 0);
       require(_addresses.length == _stages.length);
 
       for (uint256 i = 0; i < _addresses.length; i++) {

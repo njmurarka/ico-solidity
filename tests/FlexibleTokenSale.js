@@ -77,10 +77,10 @@ const Utils = require('./lib/StdTestUtils.js')
 //    - setTokensPerKEther as normal
 // setBonus
 //    - setBonus(0)
-//    - setBonus(99)
-//    - setBonus(100)
-//    - setBonus(200)
-//    - setBonus(201)
+//    - setBonus(9999)
+//    - setBonus(10000)
+//    - setBonus(20000)
+//    - setBonus(20100)
 //    - setBonus as ops
 //    - setBonus as normal
 // setSaleWindow
@@ -160,7 +160,7 @@ describe('FlexibleTokenSale Contract', () => {
    const TOKEN_TOTALSUPPLY = new BigNumber("1000000").mul(DECIMALS_FACTOR)
 
    const DEFAULT_TOKENSPERKETHER = 100000
-   const DEFAULT_BONUS = 100
+   const DEFAULT_BONUS = 10000
 
    const START_TIME        = Moment().add(1, 'M').unix()
    const END_TIME          = Moment().add(2, 'M').unix()
@@ -494,31 +494,31 @@ describe('FlexibleTokenSale Contract', () => {
          await TestLib.assertThrows(sale.methods.setBonus(0).call({ from: owner }))
       })
 
-      it('setBonus(99)', async () => {
-         await TestLib.assertThrows(sale.methods.setBonus(99).call({ from: owner }))
+      it('setBonus(9999)', async () => {
+         await TestLib.assertThrows(sale.methods.setBonus(9999).call({ from: owner }))
       })
 
-      it('setBonus(100)', async () => {
-         assert.equal(await sale.methods.setBonus(100).call({ from: owner }), true)
-         Utils.checkSetBonus(await sale.methods.setBonus(100).send({ from: owner }), 100)
+      it('setBonus(10000)', async () => {
+         assert.equal(await sale.methods.setBonus(10000).call({ from: owner }), true)
+         Utils.checkSetBonus(await sale.methods.setBonus(10000).send({ from: owner }), 10000)
       })
 
-      it('setBonus(200)', async () => {
-         assert.equal(await sale.methods.setBonus(200).call({ from: owner }), true)
-         Utils.checkSetBonus(await sale.methods.setBonus(200).send({ from: owner }), 200)
+      it('setBonus(20000)', async () => {
+         assert.equal(await sale.methods.setBonus(20000).call({ from: owner }), true)
+         Utils.checkSetBonus(await sale.methods.setBonus(20000).send({ from: owner }), 20000)
       })
 
-      it('setBonus(201)', async () => {
-         await TestLib.assertThrows(sale.methods.setBonus(201).call({ from: owner }))
+      it('setBonus(20100)', async () => {
+         await TestLib.assertThrows(sale.methods.setBonus(20100).call({ from: owner }))
       })
 
       it('setBonus as ops', async () => {
          assert.equal(await sale.methods.opsAddress().call(), ops)
-         await TestLib.assertThrows(sale.methods.setBonus(120).call({ from: ops }))
+         await TestLib.assertThrows(sale.methods.setBonus(12000).call({ from: ops }))
       })
 
       it('setBonus as normal', async () => {
-         await TestLib.assertThrows(sale.methods.setBonus(120).call({ from: account1 }))
+         await TestLib.assertThrows(sale.methods.setBonus(12000).call({ from: account1 }))
       })
    })
 

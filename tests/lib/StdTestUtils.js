@@ -16,7 +16,7 @@ module.exports.tokensFromWei = function (tokensPerKEther, weiAmount, bonus) {
 
 
 function tokensFromWei(tokensPerKEther, weiAmount, bonus) {
-   return weiAmount.mul(tokensPerKEther).mul(bonus).div(1000).div(100)
+   return weiAmount.mul(tokensPerKEther).mul(bonus).div(1000).div(10000)
 }
 
 
@@ -26,7 +26,7 @@ module.exports.weiFromTokens = function (tokensPerKEther, tokenAmount, bonus) {
 
 
 function weiFromTokens(tokensPerKEther, tokenAmount, bonus) {
-   return tokenAmount.mul(1000).mul(100).div(tokensPerKEther.mul(bonus))
+   return tokenAmount.mul(1000).mul(10000).div(tokensPerKEther.mul(bonus))
 }
 
 
@@ -227,6 +227,86 @@ function checkBuyTokens(receipt, from, to, cost, tokens) {
    assert.equal(eventArgs._beneficiary, to)
    assert.equal(new BigNumber(eventArgs._cost), cost)
    assert.equal(new BigNumber(eventArgs._tokens), tokens)
+}
+
+
+module.exports.checkSetDefaultStartTime = (receipt, startTime) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.DefaultStartTimeUpdated, 'object')
+   assert.equal(receipt.events.DefaultStartTimeUpdated.logIndex, 0)
+   const eventArgs = receipt.events.DefaultStartTimeUpdated.returnValues
+   assert.equal(Object.keys(eventArgs).length, 2)
+   assert.equal(eventArgs._startTime, startTime)
+}
+
+
+module.exports.checkGrantAllocation = (receipt, beneficiary, amount, startTime, cliffTimeDelta, endTimeDelta, interval, revokable) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.AllocationGranted, 'object')
+   assert.equal(receipt.events.AllocationGranted.logIndex, 0)
+   const eventArgs = receipt.events.AllocationGranted.returnValues
+   assert.equal(Object.keys(eventArgs).length, 14)
+   assert.equal(eventArgs._beneficiary, beneficiary)
+   assert.equal(new BigNumber(eventArgs._amount), amount)
+   assert.equal(eventArgs._startTime, startTime)
+   assert.equal(eventArgs._cliffTimeDelta, cliffTimeDelta)
+   assert.equal(eventArgs._endTimeDelta, endTimeDelta)
+   assert.equal(eventArgs._interval, interval)
+
+   // WORKAROUND since Web3 gives us false as a null
+   if (revokable == true) {
+      assert.equal(eventArgs._revokable, revokable)
+   } else {
+      assert.isTrue(eventArgs._revokable == null || eventArgs._revokable == false)
+   }
+}
+
+
+module.exports.checkRevokeAllocation = (receipt, beneficiary, amountUnlocked) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.AllocationRevoked, 'object')
+   assert.equal(receipt.events.AllocationRevoked.logIndex, 0)
+   const eventArgs = receipt.events.AllocationRevoked.returnValues
+   assert.equal(Object.keys(eventArgs).length, 4)
+   assert.equal(eventArgs._beneficiary, beneficiary)
+   assert.equal(new BigNumber(eventArgs._amountUnlocked), amountUnlocked)
+}
+
+
+module.exports.checkProcessAllocation = (receipt, beneficiary, amountTransferred) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.AllocationProcessed, 'object')
+   assert.equal(receipt.events.AllocationProcessed.logIndex, 0)
+   const eventArgs = receipt.events.AllocationProcessed.returnValues
+   assert.equal(Object.keys(eventArgs).length, 4)
+   assert.equal(eventArgs._beneficiary, beneficiary)
+   assert.equal(new BigNumber(eventArgs._amountTransferred), amountTransferred)
+}
+
+
+module.exports.checkClaimAllocation = (receipt, beneficiary, amountTransferred) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.AllocationClaimed, 'object')
+   assert.equal(receipt.events.AllocationClaimed.logIndex, 0)
+   const eventArgs = receipt.events.AllocationClaimed.returnValues
+   assert.equal(Object.keys(eventArgs).length, 4)
+   assert.equal(eventArgs._beneficiary, beneficiary)
+   assert.equal(new BigNumber(eventArgs._amountTransferred), amountTransferred)
 }
 
 

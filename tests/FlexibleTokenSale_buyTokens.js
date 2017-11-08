@@ -31,8 +31,9 @@ const Utils = require('./lib/StdTestUtils.js')
 //    - buyTokens with minimum contribution - 1 wei
 //    - buyTokens with minimum contribution
 //    - buyTokens with more ETH than maxTokensPerAccount allows
-//    - buyTokens with bonus = 100
-//    - buyTokens with bonus = 200
+//    - buyTokens with bonus = 10000
+//    - buyTokens with bonus = 10755
+//    - buyTokens with bonus = 20000
 //    - buyTokens with more ETH than left for sale
 //    - buyTokens with less tokens left than maxTokensPerAccount
 //    - buyTokens with enough ETH to buy all tokens in a single transaction, and more...
@@ -182,13 +183,18 @@ describe('FlexibleTokenSale Contract - buyTokens tests', () => {
          await sale.methods.setMaxTokensPerAccount(0).send({ from: owner })
       })
 
-      it('buyTokens with bonus = 100', async () => {
-         await sale.methods.setBonus(100).send({ from: owner })
+      it('buyTokens with bonus = 10000', async () => {
+         await sale.methods.setBonus(10000).send({ from: owner })
          await buyTokens(account1, account1, contributionMin)
       })
 
-      it('buyTokens with bonus = 200', async () => {
-         await sale.methods.setBonus(200).send({ from: owner })
+      it('buyTokens with bonus = 10755', async () => {
+         await sale.methods.setBonus(10755).send({ from: owner })
+         await buyTokens(account1, account1, contributionMin)
+      })
+
+      it('buyTokens with bonus = 20000', async () => {
+         await sale.methods.setBonus(20000).send({ from: owner })
          await buyTokens(account1, account1, contributionMin)
       })
 

@@ -15,6 +15,7 @@ contract FlexibleTokenSaleMock is FlexibleTokenSale {
 
    uint256 public _now;
 
+
    function FlexibleTokenSaleMock(uint256 _startTime, uint256 _endTime, address _walletAddress, uint256 _currentTime) public
       FlexibleTokenSale(_startTime, _endTime, _walletAddress)
    {

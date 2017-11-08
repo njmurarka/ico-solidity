@@ -80,7 +80,7 @@ describe('ERC20Token Contract', () => {
    const TOKEN_NAME        = "A"
    const TOKEN_SYMBOL      = "B"
    const TOKEN_DECIMALS    = 18
-   const DECIMALS_FACTOR   = new BigNumber(10).mul(TOKEN_DECIMALS)
+   const DECIMALS_FACTOR   = new BigNumber(10).pow(TOKEN_DECIMALS)
    const TOKEN_TOTALSUPPLY = new BigNumber("1000000").mul(DECIMALS_FACTOR)
 
    var deploymentResult = null
@@ -121,7 +121,7 @@ describe('ERC20Token Contract', () => {
       })
 
       it('totalSupply', async () => {
-         assert.equal(await token.methods.totalSupply().call(), TOKEN_TOTALSUPPLY)
+         assert.equal(new BigNumber(await token.methods.totalSupply().call()), TOKEN_TOTALSUPPLY)
       })
 
       it('balances should be private', async () => {
@@ -155,7 +155,7 @@ describe('ERC20Token Contract', () => {
       })
 
       it('balanceOf(tokenHolder)', async () => {
-         assert.equal(await token.methods.balanceOf(tokenHolder).call(), TOKEN_TOTALSUPPLY)
+         assert.equal(new BigNumber(await token.methods.balanceOf(tokenHolder).call()), TOKEN_TOTALSUPPLY)
       })
    })
 
@@ -191,7 +191,7 @@ describe('ERC20Token Contract', () => {
          Utils.checkTransfer(await token.methods.transfer(otherAccount, balance).send({ from: tokenHolder }), tokenHolder, otherAccount, balance)
 
          assert.equal(await token.methods.balanceOf(tokenHolder).call(), 0)
-         assert.equal(await token.methods.balanceOf(otherAccount).call(), balance)
+         assert.equal(new BigNumber(await token.methods.balanceOf(otherAccount).call()), balance)
       })
 
       it('transfer 1 to other account, while balance = 0', async () => {
@@ -208,7 +208,7 @@ describe('ERC20Token Contract', () => {
          Utils.checkTransfer(await token.methods.transfer(tokenHolder, balance).send({ from: otherAccount }), otherAccount, tokenHolder, balance)
 
          assert.equal(await token.methods.balanceOf(otherAccount).call(), 0)
-         assert.equal(await token.methods.balanceOf(tokenHolder).call(), balance)
+         assert.equal(new BigNumber(await token.methods.balanceOf(tokenHolder).call()), balance)
       })
    })
 

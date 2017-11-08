@@ -85,7 +85,7 @@ contract FlexibleTokenSale is Finalizable, OpsManaged {
       // Use some defaults config values. Classes deriving from FlexibleTokenSale
       // should set their own defaults
       tokensPerKEther     = 100000;
-      bonus               = 100;
+      bonus               = 10000;
       maxTokensPerAccount = 0;
       contributionMin     = 0.1 ether;
 
@@ -113,8 +113,8 @@ contract FlexibleTokenSale is Finalizable, OpsManaged {
       // This factor is used when converting cost <-> tokens.
       // 18 is because of the ETH -> Wei conversion.
       // 3 because prices are in K ETH instead of just ETH.
-      // 2 because bonuses are expressed as 100 for no bonus, 120 for 20%, etc.
-      tokenConversionFactor = 10**(uint256(18).sub(_token.decimals()).add(3).add(2));
+      // 2 because bonuses are expressed as 10000 for no bonus, 12500 for 25%, etc.
+      tokenConversionFactor = 10**(uint256(18).sub(_token.decimals()).add(3).add(4));
       require(tokenConversionFactor > 0);
 
       Initialized();
@@ -169,11 +169,11 @@ contract FlexibleTokenSale is Finalizable, OpsManaged {
 
 
    // Allows the owner to set a bonus to apply to all purchases.
-   // For example, setting it to 120 means that instead of receiving 200 tokens,
+   // For example, setting it to 12000 means that instead of receiving 200 tokens,
    // for a given price, contributors would receive 240 tokens.
    function setBonus(uint256 _bonus) external onlyOwner returns(bool) {
-      require(_bonus >= 100);
-      require(_bonus <= 200);
+      require(_bonus >= 10000);
+      require(_bonus <= 20000);
 
       bonus = _bonus;
 
@@ -326,7 +326,10 @@ contract FlexibleTokenSale is Finalizable, OpsManaged {
          return false;
       }
 
-      require(token.transfer(owner, tokens));
+      address tokenOwner = token.owner();
+      require(tokenOwner != address(0));
+
+      require(token.transfer(tokenOwner, tokens));
 
       TokensReclaimed(tokens);
 
