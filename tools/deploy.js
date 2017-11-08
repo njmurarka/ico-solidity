@@ -45,7 +45,7 @@ const CONTRIBUTION_MIN      = new BigNumber(0.1).mul(DECIMALS_FACTOR)
 // Presale configuration
 const PRESALE_TOKENS                 = new BigNumber("15000000").mul(DECIMALS_FACTOR)
 const PRESALE_TOKENSPERKETHER        = new BigNumber("1700000")
-const PRESALE_BONUS                  = new BigNumber("120")
+const PRESALE_BONUS                  = new BigNumber("12000")
 const PRESALE_MAXTOKENSPERACCOUNT    = new BigNumber("17000").mul(DECIMALS_FACTOR)
 const PRESALE_STARTTIME              = 1511870400
 const PRESALE_ENDTIME                = 1512043200
@@ -144,7 +144,11 @@ async function run() {
    o = await sale.methods.initialize(token._address).send({ from: owner })
    recordTransaction('BluzelleTokenSale.initialize', o, true)
    assert.equal(await sale.methods.token().call(), token._address)
-   assert.equal(await sale.methods.tokenConversionFactor().call(), new BigNumber(10).pow(18 - TOKEN_DECIMALS + 3 + 2))
+
+   const factor = new BigNumber(await sale.methods.tokenConversionFactor().call())
+   const expectedFactor = new BigNumber(10).pow(18 - TOKEN_DECIMALS + 3 + 4)
+   assert.equal(factor.toNumber(), expectedFactor.toNumber())
+
    assert.equal(Object.keys(o.events).length, 1)
    assert.equal(typeof o.events.Initialized, 'object')
    console.log('')
@@ -201,4 +205,6 @@ async function run() {
 }
 
 
-run()
+run().catch(error => {
+   console.log(error)
+})
