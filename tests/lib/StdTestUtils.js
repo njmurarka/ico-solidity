@@ -221,7 +221,6 @@ function checkBuyTokens(receipt, from, to, cost, tokens) {
 
    assert.equal(Object.keys(receipt.events).length, 2)
    assert.equal(typeof receipt.events.TokensPurchased, 'object')
-   assert.equal(receipt.events.TokensPurchased.logIndex, 1)
    const eventArgs = receipt.events.TokensPurchased.returnValues
    assert.equal(Object.keys(eventArgs).length, 6)
    assert.equal(eventArgs._beneficiary, to)
@@ -236,7 +235,6 @@ module.exports.checkSetDefaultStartTime = (receipt, startTime) => {
 
    assert.equal(Object.keys(receipt.events).length, 1)
    assert.equal(typeof receipt.events.DefaultStartTimeUpdated, 'object')
-   assert.equal(receipt.events.DefaultStartTimeUpdated.logIndex, 0)
    const eventArgs = receipt.events.DefaultStartTimeUpdated.returnValues
    assert.equal(Object.keys(eventArgs).length, 2)
    assert.equal(eventArgs._startTime, startTime)
@@ -249,7 +247,6 @@ module.exports.checkGrantAllocation = (receipt, beneficiary, amount, startTime, 
 
    assert.equal(Object.keys(receipt.events).length, 1)
    assert.equal(typeof receipt.events.AllocationGranted, 'object')
-   assert.equal(receipt.events.AllocationGranted.logIndex, 0)
    const eventArgs = receipt.events.AllocationGranted.returnValues
    assert.equal(Object.keys(eventArgs).length, 14)
    assert.equal(eventArgs._beneficiary, beneficiary)
@@ -274,7 +271,6 @@ module.exports.checkRevokeAllocation = (receipt, beneficiary, amountUnlocked) =>
 
    assert.equal(Object.keys(receipt.events).length, 1)
    assert.equal(typeof receipt.events.AllocationRevoked, 'object')
-   assert.equal(receipt.events.AllocationRevoked.logIndex, 0)
    const eventArgs = receipt.events.AllocationRevoked.returnValues
    assert.equal(Object.keys(eventArgs).length, 4)
    assert.equal(eventArgs._beneficiary, beneficiary)
@@ -288,7 +284,6 @@ module.exports.checkProcessAllocation = (receipt, beneficiary, amountTransferred
 
    assert.equal(Object.keys(receipt.events).length, 1)
    assert.equal(typeof receipt.events.AllocationProcessed, 'object')
-   assert.equal(receipt.events.AllocationProcessed.logIndex, 0)
    const eventArgs = receipt.events.AllocationProcessed.returnValues
    assert.equal(Object.keys(eventArgs).length, 4)
    assert.equal(eventArgs._beneficiary, beneficiary)
@@ -302,7 +297,6 @@ module.exports.checkClaimAllocation = (receipt, beneficiary, amountTransferred) 
 
    assert.equal(Object.keys(receipt.events).length, 1)
    assert.equal(typeof receipt.events.AllocationClaimed, 'object')
-   assert.equal(receipt.events.AllocationClaimed.logIndex, 0)
    const eventArgs = receipt.events.AllocationClaimed.returnValues
    assert.equal(Object.keys(eventArgs).length, 4)
    assert.equal(eventArgs._beneficiary, beneficiary)

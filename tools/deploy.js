@@ -110,7 +110,6 @@ async function run() {
 
    // Check that the Bluzelle constructor did properly fire the transfer event.
    assert.equal(Object.keys(receipt.events).length, 1)
-   assert.equal(receipt.events.Transfer.logIndex, 0)
    returnValues = receipt.events.Transfer.returnValues
    assert.equal(Object.keys(returnValues).length, 6)
    assert.equal(returnValues._from, 0)
@@ -176,7 +175,6 @@ async function run() {
    recordTransaction('BluzelleToken.transfer', o, true)
    // Check that the Bluzelle constructor did properly fire the transfer event.
    assert.equal(Object.keys(o.events).length, 1)
-   assert.equal(o.events.Transfer.logIndex, 0)
    returnValues = o.events.Transfer.returnValues
    assert.equal(Object.keys(returnValues).length, 6)
    assert.equal(returnValues._from, owner)
