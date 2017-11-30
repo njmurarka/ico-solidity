@@ -2,10 +2,10 @@ pragma solidity ^0.4.17;
 
 // ----------------------------------------------------------------------------
 // ERC20Token - Standard ERC20 Implementation
-// Enuma Blockchain Framework
+// Enuma Blockchain Platform
 //
 // Copyright (c) 2017 Enuma Technologies.
-// http://www.enuma.io/
+// https://www.enuma.io/
 // ----------------------------------------------------------------------------
 
 import "./ERC20Interface.sol";

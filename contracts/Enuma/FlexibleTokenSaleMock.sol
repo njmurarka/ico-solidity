@@ -2,10 +2,10 @@ pragma solidity ^0.4.17;
 
 // ----------------------------------------------------------------------------
 // FlexibleTokenSaleMock - Mock Token Sale Contract
-// Enuma Blockchain Framework
+// Enuma Blockchain Platform
 //
 // Copyright (c) 2017 Enuma Technologies.
-// http://www.enuma.io/
+// https://www.enuma.io/
 // ----------------------------------------------------------------------------
 
 import "./FlexibleTokenSale.sol";
