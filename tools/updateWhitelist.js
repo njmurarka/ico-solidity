@@ -64,7 +64,7 @@ async function run() {
 async function updateWhitelist1By1(instance, addresses, stage) {
 
    for (var i = 0; i < addresses.length; i++) {
-      const address = addresses[0]
+      const address = addresses[i]
 
       // Just do a sanity check first to make sure everything is ok. It should return true.
       assert.equal(await instance.methods.setWhitelistedStatus(address, 1).call({ from: opsAddress }), true)
