@@ -67,10 +67,10 @@ async function updateWhitelist1By1(instance, addresses, stage) {
       const address = addresses[i]
 
       // Just do a sanity check first to make sure everything is ok. It should return true.
-      assert.equal(await instance.methods.setWhitelistedStatus(address, 1).call({ from: opsAddress }), true)
+      assert.equal(await instance.methods.setWhitelistedStatus(address, stage).call({ from: opsAddress }), true)
 
       // Send the transaction to the blockchain.
-      const receipt = await instance.methods.setWhitelistedStatus(address, 1).send({ from: opsAddress })
+      const receipt = await instance.methods.setWhitelistedStatus(address, stage).send({ from: opsAddress })
       console.log(receipt)
 
       // Make sure the receipt looks correct
