@@ -1,14 +1,3 @@
-// ----------------------------------------------------------------------------
-// Bluzelle Whitelisting Script
-//
-// Copyright (c) 2017 Bluzelle Networks Pte Ltd.
-// http://www.bluzelle.com/
-// The MIT Licence.
-//
-// Based on whitelisting scripts from Enuma Technologies.
-// Copyright (c) 2017 Enuma Technologies
-// https://www.enuma.io/
-// ----------------------------------------------------------------------------
 
 const fs        = require('fs')
 const Web3      = require('web3')
@@ -21,8 +10,7 @@ const Moment    = require('moment')
 //
 // Configuration
 //
-const config          = JSON.parse(fs.readFileSync('../config.json'))
-const web3Url         = config.web3Url
+const web3Url         = 'http://127.0.0.1:8545'
 const abiFilePath     = '../build/BluzelleTokenSale.abi'
 const opsAddress      = '0xb0030c1cc4b979ee749e71b17c082b915dcd3c92'
 const contractAddress = '0x15E43D1Cdec9640Dc8cdDaB30C1578F40993b935'
@@ -64,8 +52,8 @@ async function run() {
 
    // Update the whitelist 1 address at a time as opposed to in batch.
    const stage = 1
-   //await updateWhitelist1By1(instance, addresses, stage)
-   await updateWhitelistBatch(instance, addresses, stage)
+   await updateWhitelist1By1(instance, addresses, stage)
+   //await updateWhitelistBatch(instance, addresses, stage)
 
    console.log(addresses.length + ' addresses processed successfully.')
 }
@@ -75,13 +63,14 @@ async function run() {
 async function updateWhitelist1By1(instance, addresses, stage) {
 
    for (var i = 0; i < addresses.length; i++) {
-      const address = addresses[i]
+      const address = addresses[0]
 
       // Just do a sanity check first to make sure everything is ok. It should return true.
-      assert.equal(await instance.methods.setWhitelistedStatus(address, stage).call({ from: opsAddress }), true)
+      assert.equal(await instance.methods.setWhitelistedStatus(address, 1).call({ from: opsAddress }), true)
 
       // Send the transaction to the blockchain.
-      const receipt = await instance.methods.setWhitelistedStatus(address, stage).send({ from: opsAddress })
+      const receipt = await instance.methods.setWhitelistedStatus(address, 1).send({ from: opsAddress })
+      console.log(receipt)
 
       // Make sure the receipt looks correct
       assert.equal(receipt.events.WhitelistedStatusUpdated.event, "WhitelistedStatusUpdated")
@@ -110,12 +99,13 @@ async function updateWhitelistBatch(instance, addresses, stage) {
       console.log('Processing batch ' + (i + 1) + ' of ' + batches.length)
 
       const batch = batches[i]
+      const stages = Array(batch.length).fill(stage)
 
       // Just do a sanity check first to make sure everything is ok. It should return true.
-      assert.equal(await instance.methods.setWhitelistedBatch(batch, stage).call({ from: opsAddress }), true)
+      assert.equal(await instance.methods.setWhitelistedBatch(batch, stages).call({ from: opsAddress }), true)
 
       // Send the transaction to the blockchain.
-      const receipt = await instance.methods.setWhitelistedBatch(batch, stage).send({ from: opsAddress })
+      const receipt = await instance.methods.setWhitelistedBatch(batch, stages).send({ from: opsAddress })
       console.log(receipt)
 
       // Validate the receipt
@@ -123,10 +113,10 @@ async function updateWhitelistBatch(instance, addresses, stage) {
       assert.equal(Object.keys(events).length, batch.length)
       for (var j = 0; j < batch.length; j++) {
          assert.equal(events[j].returnValues._address, batch[j])
-         assert.equal(events[j].returnValues._stage, stage)
+         assert.equal(events[j].returnValues._stage, stages[j])
 
          // Verify the whitelisted state in the sale contract
-         assert.equal(await instance.methods.whitelist(batch[j]).call(), stage)
+         assert.equal(await instance.methods.whitelist(batch[j]).call(), stages[j])
       }
    }
 }

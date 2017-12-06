@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // ERC20Interface - Standard ERC20 Interface Definition

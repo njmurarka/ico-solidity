@@ -3,8 +3,11 @@
 //
 // Copyright (c) 2017 Bluzelle Networks Pte Ltd.
 // http://www.bluzelle.com/
-//
 // The MIT Licence.
+//
+// Based on FlexibleTokenSale tests from Enuma Technologies.
+// Copyright (c) 2017 Enuma Technologies
+// https://www.enuma.io/
 // ----------------------------------------------------------------------------
 
 const StdUtils = require('./Enuma/lib/StdTestUtils.js')
@@ -435,8 +438,8 @@ describe('BluzelleTokenSale Contract', () => {
       it('setWhitelistedBatch as owner', async () => {
          var addresses = [ account1, account2, account3, account4, account5 ]
 
-         assert.equal(await sale.methods.setWhitelistedBatch(addresses, 10).call({ from: ops }), true)
-         receipt = await sale.methods.setWhitelistedBatch(addresses, 10).send({ from: ops })
+         assert.equal(await sale.methods.setWhitelistedBatch(addresses, 10).call({ from: owner }), true)
+         receipt = await sale.methods.setWhitelistedBatch(addresses, 10).send({ from: owner })
          Utils.checkSetWhitelistedBatch(receipt, addresses, 10)
 
          for (i = 0; i < addresses.length; i++) {

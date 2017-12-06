@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // MathTest - Simple wrapper contract to test the Math library

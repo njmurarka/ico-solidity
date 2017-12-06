@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // FinalizableToken - Extension to ERC20Token with ops and finalization

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // OpsManaged - Implements an Owner and Ops Permission Model
