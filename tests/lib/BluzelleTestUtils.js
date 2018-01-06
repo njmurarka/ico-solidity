@@ -3,13 +3,27 @@
 //
 // Copyright (c) 2017 Bluzelle Networks Pte Ltd.
 // http://www.bluzelle.com/
-//
 // The MIT Licence.
+//
+// Based on test utilities from Enuma Technologies.
+// Copyright (c) 2017 Enuma Technologies
+// https://www.enuma.io/
 // ----------------------------------------------------------------------------
 
 const TestLib = require('../../tools/testlib.js')
 const StdUtils = require('../Enuma/lib/StdTestUtils.js')
 
+
+module.exports.checkReclaimTokens = (receipt, amount) => {
+
+   TestLib.checkStatus(receipt)
+
+   assert.equal(Object.keys(receipt.events).length, 1)
+   assert.equal(typeof receipt.events.TokensReclaimed, 'object')
+   const eventArgs = receipt.events.TokensReclaimed.returnValues
+   assert.equal(Object.keys(eventArgs).length, 2)
+   assert.equal(eventArgs._amount, amount)
+}
 
 module.exports.checkSetCurrentStage = (receipt, newStage) => {
 
