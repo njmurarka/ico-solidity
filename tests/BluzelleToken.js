@@ -114,7 +114,7 @@ describe('BluzelleToken Contract', () => {
       it('reclaimTokens when 0 to reclaim', async () => {
          assert.equal(await token.methods.balanceOf(token._address).call(), 0)
 
-         assert.equal(await token.methods.reclaimTokens().call({ from: owner }), true)
+         assert.equal(await token.methods.reclaimTokens().call({ from: owner }), false)
       })
 
       it('reclaimTokens when > 0 to reclaim', async () => {
@@ -124,7 +124,7 @@ describe('BluzelleToken Contract', () => {
          const ownerBalanceBefore = new BigNumber(await token.methods.balanceOf(owner).call())
 
          assert.equal(await token.methods.reclaimTokens().call({ from: owner }), true)
-         Utils.checkReclaimTokens(await token.methods.reclaimTokens().send({ from: owner }), 1000)
+         Utils.checkReclaimTokens(await token.methods.reclaimTokens().send({ from: owner }), token._address, owner, 1000)
 
          assert.equal(await token.methods.balanceOf(token._address).call(), 0)
          assert.equal(ownerBalanceBefore.sub(await token.methods.balanceOf(owner).call()).toString(), -1000)
@@ -133,7 +133,7 @@ describe('BluzelleToken Contract', () => {
       it('reclaimTokens again', async () => {
          assert.equal(await token.methods.balanceOf(token._address).call(), 0)
 
-         assert.equal(await token.methods.reclaimTokens().call({ from: owner }), true)
+         assert.equal(await token.methods.reclaimTokens().call({ from: owner }), false)
       })
 
       it('reclaimTokens as normal', async () => {

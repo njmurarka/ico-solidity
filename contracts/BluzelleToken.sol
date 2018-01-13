@@ -44,11 +44,13 @@ contract BluzelleToken is FinalizableToken, BluzelleTokenConfig {
       uint256 amount  = balanceOf(account);
 
       if (amount == 0) {
-         return true;
+         return false;
       }
 
       balances[account] = balances[account].sub(amount);
       balances[owner] = balances[owner].add(amount);
+
+      Transfer(account, owner, amount);
 
       TokensReclaimed(amount);
 
